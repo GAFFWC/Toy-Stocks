@@ -21,6 +21,7 @@ const getData = async (code) => {
 					return value.replace(/[^0-9]/g, "");
 				});
 
+			console.log($(".blind").find("dd").text());
 			result.datetime = deal[0] + "-" + deal[1] + "-" + deal[2] + " " + deal[3] + ":" + deal[4] + ":00";
 			result.code = deal[8];
 			result.price = {
