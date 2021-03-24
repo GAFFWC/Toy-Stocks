@@ -1,4 +1,4 @@
-import { ApiProperty, getSchemaPath, IntersectionType, PickType } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath, IntersectionType, PartialType, PickType } from "@nestjs/swagger";
 import { IsObject, ValidateNested } from "class-validator";
 import { Response } from "src/common/dto/response.dto";
 import { Company } from "src/entities/company.entity";
@@ -18,3 +18,5 @@ export class GetCompanyInfoResponse extends Response {
 		price: PriceInfo;
 	};
 }
+
+export class GetCompanyInfoBySearchDTO extends PartialType(Company) {}
