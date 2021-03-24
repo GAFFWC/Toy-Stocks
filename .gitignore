@@ -1,4 +1,4 @@
-.node_modules
+node_modules
 .vscode
 api/stocks/.env.dev
 api/stocks/.eslintrc.js
