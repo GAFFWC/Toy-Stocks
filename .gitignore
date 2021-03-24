@@ -2,3 +2,5 @@ node_modules
 .vscode
 api/stocks/.env.dev
 api/stocks/.eslintrc.js
+
+.DS_Store
