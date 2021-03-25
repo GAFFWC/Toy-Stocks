@@ -2,7 +2,7 @@ steps:
 # 파일 다운로드
 - name: 'gcr.io/cloud-builders/gsutil'
   args: ['cp', 
-  "gs://ts-study-config/stock/.env.prod",
+  "gs://ts-study-config/.env.prod",
   '.']
 
 # 도커 이미지 빌드
@@ -14,7 +14,7 @@ steps:
 
 # 빌드된 이미지를 kubernetes 에 배포
 - name: 'gcr.io/cloud-builders/kubectl'
-  args: ['set', 'image', 'deployments/${_APP_NAME}', '${_APP_NAME}=us.gcr.io/$PROJECT_ID/${_NAMESPACE}/${_APP_NAME}:latest' , '--namespace=${_NAMESPACE}']
+  args: ['set', 'image', 'deployments/${_APP_NAME}', '${_APP_NAME}=us.gcr.io/$PROJECT_ID/${_NAMESPACE}/${_APP_NAME}:${_CLOUDRUNSTAMP}' , '--namespace=${_NAMESPACE}']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
   - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'

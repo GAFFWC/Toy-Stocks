@@ -47,7 +47,9 @@ spec:
                   #     successThreshold: 1
                   #     timeoutSeconds: 1
                   imagePullPolicy: IfNotPresent
-                  # env:
+                  env:
+                      - name: NODE_ENV
+                        value: prod
                   #     - name: LANG
                   #       value: ko_KR.UTF-8
                   #     - name: TZ
