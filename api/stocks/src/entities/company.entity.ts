@@ -19,7 +19,6 @@ export class Company {
     @ApiProperty({
         description: '시장 구분 (KOSPI, KOSDAQ, KONEX)',
         enum: MarketType,
-        example: '(KOSPI, KOSDAQ, KONEX)',
     })
     @IsEnum(MarketType)
     @Column({ type: 'enum', enum: MarketType, nullable: false, comment: '시장 구분 (KOSPI, KOSDAQ, KONEX)' })
@@ -75,11 +74,9 @@ export class Company {
     @Column({ type: 'varchar', comment: '지역' })
     location: String;
 
-    @ApiProperty({ description: 'createAt' })
     @CreateDateColumn({ type: 'datetime', precision: null, default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
-    @ApiProperty({ description: 'updatedAt' })
     @UpdateDateColumn({
         type: 'datetime',
         precision: null,
