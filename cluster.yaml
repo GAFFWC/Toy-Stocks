@@ -1,0 +1,28 @@
+resources:
+    - name: ts-study-cluster
+      type: container.v1.cluster
+      properties:
+          zone: us-central1-c
+          cluster:
+              name: stock-cluster
+              nodePools:
+                  - name: default-node
+                    config:
+                        machineType: g1-small
+                        diskSizeGb: 20
+                        imageType: COS
+                        oauthScopes:
+                            - https://www.googleapis.com/auth/cloud-platform
+                    initialNodeCount: 1
+                    maxPodsConstraint:
+                        maxPodsPerNode: 110
+              privateClusterConfig:
+                  enablePrivateNodes: true
+                  masterIpv4CidrBlock: 172.16.0.32/28
+              ipAllocationPolicy:
+                  useIpAliases: true
+                  createSubnetwork: true
+              masterAuthorizedNetworksConfig:
+                  enabled: false
+              defaultMaxPodsConstraint:
+                  maxPodsPerNode: '110'
