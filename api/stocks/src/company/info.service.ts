@@ -1,15 +1,12 @@
 import { HttpService, Injectable, ParseIntPipe, ValidationPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Company } from 'src/entities/company.entity';
+import { Company, MarketType } from 'src/entities/company.entity';
 import { Like, Repository } from 'typeorm';
 import { GetCompanyInfoBySearchDTO, GetCompanyInfoResponse } from './dto/company.dto';
-import { PriceInfo, PriceInfoResponse } from './dto/price.dto';
+import { Price } from './dto/price.dto';
 
-import * as iconv from 'iconv-lite';
-import * as cheerio from 'cheerio';
-import * as axios from 'axios';
-import { throwError } from 'rxjs';
-import { ERROR } from 'src/common/error.common';
+import * as yf from 'yahoo-finance';
+import { ERROR, throwError } from 'src/common/error.common';
 
 @Injectable()
 export class InfoService {
@@ -27,18 +24,17 @@ export class InfoService {
             });
 
             if (!company) {
-                throw new Error('COMPANY_NOT_FOUND');
-            }
-
-            const priceInfo = await this.getPrice(code);
-
-            if (!priceInfo.result) {
                 throw new Error('PRICE_INFO_NOT_FOUND');
             }
 
+            const price = await this.getPrice(company);
+
+            if (!price) {
+                throw new Error('PRICE_INFO_NOT_FOUND');
+            }
             return {
                 company: company,
-                price: priceInfo.data,
+                price: price,
             };
         } catch (err) {
             console.error(err);
@@ -52,8 +48,13 @@ export class InfoService {
 
     async getSearch(getCompanyInfoBySearchDTO: GetCompanyInfoBySearchDTO): Promise<GetCompanyInfoResponse[]> {
         try {
-            const key = Object.keys(getCompanyInfoBySearchDTO)[0];
             const where = {};
+
+            where['type'] = MarketType.KOSDAQ;
+
+            const key = Object.getOwnPropertyNames(getCompanyInfoBySearchDTO).filter((key) => {
+                return key != 'type';
+            })[0];
 
             where[`${key}`] = Like(`%${getCompanyInfoBySearchDTO[key]}%`);
 
@@ -64,15 +65,11 @@ export class InfoService {
             let result = [];
 
             for await (const company of search) {
-                const priceInfo = await this.getPrice(company.code);
-
-                if (!priceInfo.result) {
-                    continue;
-                }
+                const price = await this.getPrice(company);
 
                 result.push({
                     company: company,
-                    price: priceInfo.data,
+                    price: price,
                 });
             }
 
@@ -87,65 +84,40 @@ export class InfoService {
         }
         return;
     }
-    async getPrice(code: String): Promise<PriceInfoResponse> {
-        const URL = `https://finance.naver.com/item/main.nhn?code=${code}`;
-        const crawled = await axios
-            .default({
-                url: URL,
-                method: 'GET',
-                responseType: 'arraybuffer',
+    async getPrice(company: Company): Promise<Price> {
+        const symbol = company.code + '.' + (company.type === MarketType.KOSPI ? 'KS' : 'KQ');
+
+        const result = await yf
+            .quote({
+                symbol: symbol,
+                modules: ['price'],
             })
             .then((res) => {
-                if (res.status !== 200) {
-                    return false;
-                }
-                const $ = cheerio.load(iconv.decode(res.data, 'EUC-KR'));
-                return $('.blind')
-                    .find('dd')
-                    .text()
-                    .split(' ')
-                    .map((value) => {
-                        return value.replace(/[^0-9]/g, '');
-                    });
+                return res;
             })
             .catch((err) => {
-                console.log(err);
-                return false;
+                console.error(err);
+                throw new Error('GET_PRICE_FAILED');
             });
 
         try {
-            if (!crawled) {
-                throw new Error('PRICE_INFO_NOT_FOUND');
-            }
+            const price = new Price();
 
-            const newPriceInfo = new PriceInfo();
+            price.date = new Date(result.price.regularMarketTime);
+            price.date.setHours(price.date.getHours() + 9);
+            price.date.setMinutes(price.date.getMinutes() + 20);
 
-            newPriceInfo.datetime = new Date(
-                crawled[0] + '-' + crawled[1] + '-' + crawled[2] + ' ' + crawled[3] + ':' + crawled[4] + ':00',
-            );
-            newPriceInfo.datetime.setHours(newPriceInfo.datetime.getHours() + 9);
+            price.now = result.price.regularMarketPrice;
+            price.low = result.price.regularMarketDayLow;
+            price.high = result.price.regularMarketDayHigh;
+            price.previous = result.price.regularMarketPreviousClose;
+            price.volume = result.price.regularMarketVolume;
 
-            newPriceInfo.price = {
-                now: parseInt(crawled[10]),
-                yesterday: {
-                    start: parseInt(crawled[17]),
-                    highest: parseInt(crawled[19]),
-                    lowest: parseInt(crawled[18]),
-                    upperLimit: parseInt(crawled[20]),
-                    lowerLimit: parseInt(crawled[21]),
-                },
-            };
-
-            newPriceInfo.volume = parseInt(crawled[22]);
-
-            return {
-                result: true,
-                data: newPriceInfo,
-            };
+            return price;
         } catch (err) {
-            return {
-                result: false,
-            };
+            console.error(err);
+            throwError('GET_PRICE_FAILED');
         }
+        return;
     }
 }
