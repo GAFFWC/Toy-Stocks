@@ -6,7 +6,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     // prefix : /api/v1
-    app.setGlobalPrefix('api/v1');
+    // app.setGlobalPrefix('api/v1');
 
     // swagger document creation
     const document = SwaggerModule.createDocument(
@@ -19,7 +19,7 @@ async function bootstrap() {
     );
 
     // swagger setup
-    SwaggerModule.setup('api/v1/swagger', app, document, {
+    SwaggerModule.setup('/swagger', app, document, {
         customSiteTitle: 'Toy-Stocks',
         // customfavIcon:
     });
