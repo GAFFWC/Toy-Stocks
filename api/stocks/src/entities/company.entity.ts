@@ -3,10 +3,9 @@ import { IsDate, IsEnum, IsNumber, IsNumberString, IsString, IsUrl } from 'class
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { URL } from 'url';
 
-enum MarketType {
+export enum MarketType {
     KOSPI,
     KOSDAQ,
-    KONEX,
 }
 
 @Entity()
