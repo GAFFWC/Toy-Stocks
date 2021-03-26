@@ -1,10 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { InfoModule } from './company/info.module';
+import { companyMiddleware } from './middleware/company.middleware';
 
 @Module({
     imports: [
@@ -40,4 +39,8 @@ import { InfoModule } from './company/info.module';
     controllers: [],
     providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(companyMiddleware).forRoutes('health');
+    }
+}

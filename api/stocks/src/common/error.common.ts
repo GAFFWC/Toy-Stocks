@@ -22,6 +22,8 @@ type CustomError = {
 enum CustomErrorType {
     COMPANY_NOT_FOUND,
     PRICE_INFO_NOT_FOUND,
+    GET_PRICE_FAILED,
+    SEARCH_REQUIRES_COMPANY_TYPE,
     SEARCH_REQUIRES_EXACTLY_ONE_KEY,
     INVALID_SEARCH_KEYS,
 }
@@ -63,6 +65,20 @@ export const ERROR: ErrorType = {
         data: {
             code: 'INVALID_SEARCH_KEYS',
             message: 'name / products / sectors 중 하나의 검색어만 가능합니다.',
+        },
+    },
+    GET_PRICE_FAILED: {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: {
+            code: 'GET_PRICE_FAILED',
+            message: 'finance api 오류',
+        },
+    },
+    SEARCH_REQUIRES_COMPANY_TYPE: {
+        status: HttpStatus.BAD_REQUEST,
+        data: {
+            code: 'SEARCH_REQUIRES_COMPANY_TYPE',
+            message: '상장 구분 값이 필요합니다.',
         },
     },
 };

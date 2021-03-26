@@ -1,25 +1,15 @@
 import { Controller, Get, HttpStatus, Param, ParseIntPipe, Query } from '@nestjs/common';
-import {
-    ApiExtraModels,
-    ApiOperation,
-    ApiParam,
-    ApiProperty,
-    ApiQuery,
-    ApiResponse,
-    ApiTags,
-    getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiExtraModels, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Error } from 'src/common/dto/error.dto';
-import { Response } from 'src/common/dto/response.dto';
 import { Company } from 'src/entities/company.entity';
 import { SearchCompany } from './decorator/company.decorator';
 import { GetCompanyInfoBySearchDTO, GetCompanyInfoResponse } from './dto/company.dto';
-import { PriceInfo } from './dto/price.dto';
+import { Price } from './dto/price.dto';
 import { InfoService } from './info.service';
 
 @Controller('company')
 @ApiTags('company')
-@ApiExtraModels(GetCompanyInfoResponse, GetCompanyInfoResponse, Company, PriceInfo, Error)
+@ApiExtraModels(GetCompanyInfoResponse, GetCompanyInfoResponse, Company, Price, Error)
 export class InfoController {
     constructor(private readonly infoService: InfoService) {}
 
