@@ -87,6 +87,7 @@ export class InfoService {
     async getPrice(company: Company): Promise<Price> {
         const symbol = company.code + '.' + (company.type === MarketType.KOSPI ? 'KS' : 'KQ');
 
+        console.log('yf start');
         const result = await yf
             .quote({
                 symbol: symbol,
@@ -99,6 +100,7 @@ export class InfoService {
                 console.error(err);
                 throw new Error('GET_PRICE_FAILED');
             });
+        console.log('yf finish');
 
         try {
             const price = new Price();
@@ -116,7 +118,11 @@ export class InfoService {
             return price;
         } catch (err) {
             console.error(err);
-            throwError('GET_PRICE_FAILED');
+            if (Object.keys(ERROR).includes(err.message)) {
+                throwError(err.message);
+            } else {
+                throwError('INTERNAL_SERVER_ERROR');
+            }
         }
         return;
     }
