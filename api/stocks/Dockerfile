@@ -14,9 +14,15 @@ FROM node:14-alpine
 
 WORKDIR /app
 
+COPY --from=builder /app/tsconfig*.json ./
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY .env.prod /app/.env.prod
+COPY .env.dev ./app/.env.dev
 
-CMD ["npm", "run", "start:prod"]
+# prod
+CMD ["npm", "run", "start"]
+
+# dev
+# CMD ["npm", "run", "start:dev"]
