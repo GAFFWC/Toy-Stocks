@@ -18,3 +18,20 @@ spec:
             containers:
                 - name: stock-cron
                   image: us.gcr.io/typescript-study-2020-10-30/default/stock-cron:latest
+---
+# stock-cron Expose
+apiVersion: v1
+kind: Service
+metadata:
+    name: stock-cron
+    namespace: default
+    labels:
+        app: stock-cron
+spec:
+    ports:
+        - protocol: TCP
+          port: 8080
+          nodePort: 30100
+    selector:
+        app: stock-cron
+    type: NodePort
