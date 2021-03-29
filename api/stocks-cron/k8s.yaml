@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: stock-cron
+    name: stock-cron
+    namespace: default
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: stock-cron
+    template:
+        metadata:
+            labels:
+                app: stock-cron
+        spec:
+            containers:
+                - name: stock-cron
+                  image: us.gcr.io/typescript-study-2020-10-30/default/stock-cron:latest
