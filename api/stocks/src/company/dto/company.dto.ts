@@ -17,6 +17,7 @@ export class GetCompanyInfoResponse {
 export class GetCompanyInfoBySearchDTO extends PickType(Company, ['type', 'name', 'products', 'sectors']) {
     @ApiProperty({ required: true })
     type: MarketType;
+
     @ApiProperty({ required: false })
     name: string;
 

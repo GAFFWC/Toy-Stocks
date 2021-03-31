@@ -74,6 +74,8 @@ metadata:
     labels:
         app: stock
 spec:
+    clusterIP: 10.3.205.72
+    externalTrafficPolicy: Cluster
     ports:
         - protocol: TCP
           port: 3000

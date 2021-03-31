@@ -5,6 +5,7 @@ import { Like, Repository } from 'typeorm';
 import { GetCompanyInfoBySearchDTO, GetCompanyInfoResponse } from './dto/company.dto';
 import { Price } from './dto/price.dto';
 
+import * as axios from 'axios';
 import * as yf from 'yahoo-finance';
 import { ERROR, throwError } from 'src/common/error.common';
 
@@ -87,7 +88,6 @@ export class InfoService {
     async getPrice(company: Company): Promise<Price> {
         const symbol = company.code + '.' + (company.type === MarketType.KOSPI ? 'KS' : 'KQ');
 
-        console.log('yf start');
         const result = await yf
             .quote({
                 symbol: symbol,
@@ -100,7 +100,6 @@ export class InfoService {
                 console.error(err);
                 throw new Error('GET_PRICE_FAILED');
             });
-        console.log('yf finish');
 
         try {
             const price = new Price();

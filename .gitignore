@@ -1,6 +1,7 @@
 node_modules
 .vscode
 api/stocks/.env.dev
+api/stocks/.env.prod
 api/stocks/.eslintrc.js
 
 build
