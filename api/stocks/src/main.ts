@@ -2,8 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { cors: true });
 
+    app.enableCors({
+        allowedHeaders: 'Content-Type',
+        methods: 'POST,GET,PUT,PATCH,DELETE,OPTIONS',
+        credentials: true,
+        origin: true,
+    });
     // prefix : /api/v1
     // app.setGlobalPrefix('api/v1');
 
