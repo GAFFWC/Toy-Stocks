@@ -2,7 +2,7 @@ steps:
 # 파일 다운로드
 - name: 'gcr.io/cloud-builders/gsutil'
   args: ['cp', 
-  "gs://ts-study-config/stock/.env.prod",
+  "gs://ts-study-config/stock-cron/.env.prod",
   '.']
 
 # 도커 이미지 빌드

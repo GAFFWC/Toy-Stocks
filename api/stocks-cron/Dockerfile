@@ -1,14 +1,27 @@
+# BUILD
+FROM node:14-alpine AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+RUN npm audit fix
+RUN npm run build
+
+# PROD
 FROM node:14-alpine
 
 WORKDIR /app
 
-COPY package.json .
-COPY package-lock.json .
+COPY --from=builder /app/tsconfig*.json ./
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.env* ./
 
-COPY app/ .
+# prod
+CMD ["npm", "run", "start"]
 
-RUN npm install
-RUN npm audit fix
-
-CMD ["node", "app.js"]
-
+# dev
+# CMD ["npm", "run", "start:dev"]
