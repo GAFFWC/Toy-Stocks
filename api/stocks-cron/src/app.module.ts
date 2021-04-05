@@ -36,6 +36,7 @@ import { ClientRedis, ClientsModule, RedisContext, Transport } from '@nestjs/mic
             logging: true,
             entities: [__dirname + '/entities/*{.ts,.js}'],
         }),
+
         ScheduleModule.forRoot(),
         CronModule,
     ],
