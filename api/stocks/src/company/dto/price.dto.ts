@@ -6,17 +6,17 @@ export class Price {
     date: Date;
 
     @ApiProperty({ description: '현재가' })
-    now: Number;
+    now: number;
 
     @ApiProperty({ description: '고가' })
-    high: Number;
+    high: number;
 
     @ApiProperty({ description: '저가' })
-    low: Number;
+    low: number;
 
     @ApiProperty({ description: '전일 종가' })
-    previous: Number;
+    previous: number;
 
     @ApiProperty({ description: '거래량' })
-    volume: Number;
+    volume: number;
 }
